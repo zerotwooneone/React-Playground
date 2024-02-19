@@ -1,9 +1,10 @@
-import React from 'react';
-import * as THREE from 'three'
-import logo from './logo.svg';
+import { Suspense } from 'react';
 import './App.css';
-import { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { useRef, useState } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { Environment, OrbitControls } from '@react-three/drei';
+
 
 function Box(props: JSX.IntrinsicElements['mesh']) {
   // This reference will give us direct access to the THREE.Mesh object
@@ -28,21 +29,33 @@ function Box(props: JSX.IntrinsicElements['mesh']) {
   )
 }
 
+function Stl(props: JSX.IntrinsicElements['mesh']) {
+  // This reference will give us direct access to the THREE.Mesh object
+  const ref = useRef<THREE.Mesh>(null!)
+  
+  const path = require('./FoodDice1.fbx');
+  const fbx = useLoader(FBXLoader,path)
+
+  return (
+    <primitive object={fbx} scale={.05} position={[-5,-5,0]} />
+  )
+}
+
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />        
-      </header>
-      <div>
-        <Canvas>
+      <Canvas>
+        <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
           <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
           <pointLight position={[-10, -10, -10]} />
           <Box position={[-1.2, 0, 0]} />
           <Box position={[1.2, 0, 0]} />
-        </Canvas>
-      </div>
+          <Stl />
+          <OrbitControls />
+          <Environment preset="sunset" background />
+        </Suspense>
+      </Canvas>
     </div>
     
   );
