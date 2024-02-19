@@ -30,14 +30,14 @@ function Box(props: JSX.IntrinsicElements['mesh']) {
 }
 
 function Stl(props: JSX.IntrinsicElements['mesh']) {
-  // This reference will give us direct access to the THREE.Mesh object
-  const ref = useRef<THREE.Mesh>(null!)
   
   const path = require('./FoodDice1.fbx');
   const fbx = useLoader(FBXLoader,path)
 
   return (
-    <primitive object={fbx} scale={.05} position={[-5,-5,0]} />
+    <primitive object={fbx} scale={.05} position={[-5, -5, 0]} >
+      <meshStandardMaterial color={'hotpink'} />
+    </primitive>    
   )
 }
 
@@ -46,7 +46,11 @@ function App() {
     <div className="App">
       <Canvas>
         <Suspense fallback={null}>
-          <ambientLight intensity={0.5} />
+          <directionalLight
+            position={[3.3, 1.0, 4.4]}
+            castShadow
+            intensity={Math.PI * 2}
+          />
           <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
           <pointLight position={[-10, -10, -10]} />
           <Box position={[-1.2, 0, 0]} />
